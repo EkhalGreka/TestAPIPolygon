@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
+using System.Globalization;
 
 namespace WebApplication1.Controllers.V2
 {
@@ -13,10 +15,13 @@ namespace WebApplication1.Controllers.V2
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        //private readonly IStringLocalizer<WeatherForecastController> _localizer;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
+
+
         }
 
         //[MapToApiVersion("2.0")]
@@ -36,6 +41,17 @@ namespace WebApplication1.Controllers.V2
         public string GetStuff()
         {
             return "вторая версия приложения";
+        }
+
+        [HttpGet("GetCulture")]
+        public string GetCulture(string code = "")
+        {
+            if (!String.IsNullOrEmpty(code))
+            {
+                CultureInfo.CurrentCulture = new CultureInfo(code);
+                CultureInfo.CurrentUICulture = new CultureInfo(code);
+            }
+            return $"CurrentCulture:{CultureInfo.CurrentCulture.Name}, CurrentUICulture:{CultureInfo.CurrentUICulture.Name}";
         }
     }
 }
