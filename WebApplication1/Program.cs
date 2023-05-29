@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Globalization;
 using WebApplication1;
@@ -42,6 +43,17 @@ builder.Services.AddVersionedApiExplorer(setup =>
 });
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
+builder.Services.AddAuthentication("Bearer")
+            .AddJwtBearer("Bearer", options =>
+            {
+                options.Authority = "https://localhost:5001";
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
+            });
+
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -78,6 +90,7 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 
